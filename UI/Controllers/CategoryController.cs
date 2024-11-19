@@ -17,7 +17,7 @@ namespace UI.Controllers
         {
             var list = _categoryRepository.GetAll();
 
-            return View();
+            return View(list);
         }
     }
 }
