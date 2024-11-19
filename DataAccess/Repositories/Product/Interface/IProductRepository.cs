@@ -1,6 +1,6 @@
 ﻿using Domain.DataClass;
 
-namespace CMR.DataAccess.Repositories
+namespace DataAccess.Repositories
 {
     public interface IProductRepository
     {

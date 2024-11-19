@@ -2,7 +2,7 @@
 using Domain.DataClass;
 using Microsoft.Extensions.Configuration;
 
-namespace CMR.DataAccess.Repositories
+namespace DataAccess.Repositories
 {
     public class ProductRepository : IProductRepository
     {

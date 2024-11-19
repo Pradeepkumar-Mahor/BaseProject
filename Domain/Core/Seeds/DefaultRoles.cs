@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Domain.DataClass;
+using Microsoft.AspNetCore.Identity;
 
 namespace Domain
 {
