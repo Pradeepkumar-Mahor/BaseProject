@@ -17,11 +17,11 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<ApplicationUsers>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//builder.Services.AddDefaultIdentity<ApplicationUsers>(options => options.SignIn.RequireConfirmedAccount = true)
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
@@ -60,18 +60,18 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedEmail = true;
 });
 
-//builder.Services.ConfigureApplicationCookie(option =>
-//{
-//    option.Cookie.Name = "CookieName";
-//    option.Cookie.HttpOnly = true;
-//    option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-//    option.LoginPath = "/Identity/Account/Login";
-//    option.AccessDeniedPath = "/Identity/Account/AccessDenied";
-//    // ReturnUrlParameter requires
+builder.Services.ConfigureApplicationCookie(option =>
+{
+    option.Cookie.Name = "CookieName";
+    option.Cookie.HttpOnly = true;
+    option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    option.LoginPath = "/Identity/Account/Login";
+    option.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    // ReturnUrlParameter requires
 
-//    //option.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-//    //option.SlidingExpiration = true;
-//});
+    option.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+    option.SlidingExpiration = true;
+});
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -153,24 +153,24 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
-//app.MapRazorPages();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapRazorPages();
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapRazorPages();
 
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+//    endpoints.MapControllerRoute(
+//        name: "default",
+//        pattern: "{controller=Home}/{action=Index}/{id?}");
 
-    endpoints.MapAreaControllerRoute(
-            name: "Identity",
-            areaName: "Identity",
-            pattern: "{page=login}/{id?}"
-          );
-});
+//    endpoints.MapAreaControllerRoute(
+//            name: "Identity",
+//            areaName: "Identity",
+//            pattern: "{page=login}/{id?}"
+//          );
+//});
 
 app.Run();

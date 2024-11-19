@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using Domain.DataClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -15,10 +16,10 @@ namespace UI.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterConfirmationModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUsers> _userManager;
         private readonly IEmailSender _sender;
 
-        public RegisterConfirmationModel(UserManager<IdentityUser> userManager, IEmailSender sender)
+        public RegisterConfirmationModel(UserManager<ApplicationUsers> userManager, IEmailSender sender)
         {
             _userManager = userManager;
             _sender = sender;
@@ -50,7 +51,7 @@ namespace UI.Areas.Identity.Pages.Account
             }
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            IdentityUser user = await _userManager.FindByEmailAsync(email);
+            ApplicationUsers user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
                 return NotFound($"Unable to load user with email '{email}'.");

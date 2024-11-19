@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using Domain.DataClass;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,11 +12,11 @@ namespace UI.Areas.Identity.Pages.Account.Manage
 {
     public class DownloadPersonalDataModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUsers> _userManager;
         private readonly ILogger<DownloadPersonalDataModel> _logger;
 
         public DownloadPersonalDataModel(
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUsers> userManager,
             ILogger<DownloadPersonalDataModel> logger)
         {
             _userManager = userManager;
@@ -29,7 +30,7 @@ namespace UI.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            IdentityUser user = await _userManager.GetUserAsync(User);
+            ApplicationUsers user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -39,7 +40,7 @@ namespace UI.Areas.Identity.Pages.Account.Manage
 
             // Only include personal data for download
             Dictionary<string, string> personalData = new();
-            IEnumerable<System.Reflection.PropertyInfo> personalDataProps = typeof(IdentityUser).GetProperties().Where(
+            IEnumerable<System.Reflection.PropertyInfo> personalDataProps = typeof(ApplicationUsers).GetProperties().Where(
                             prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
             foreach (System.Reflection.PropertyInfo p in personalDataProps)
             {
