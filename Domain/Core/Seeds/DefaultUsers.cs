@@ -1,4 +1,5 @@
 ﻿using Domain.Core;
+using Domain.DataClass;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
@@ -6,9 +7,9 @@ namespace Domain
 {
     public static class DefaultUsers
     {
-        public static async Task SeedBasicUserAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedBasicUserAsync(UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager)
         {
-            IdentityUser defaultUser = new()
+            ApplicationUsers defaultUser = new()
             {
                 UserName = "basicuser@gmail.com",
                 Email = "basicuser@gmail.com",
@@ -16,7 +17,7 @@ namespace Domain
             };
             if (userManager.Users.All(u => u.Id != defaultUser.Id))
             {
-                IdentityUser? user = await userManager.FindByEmailAsync(defaultUser.Email);
+                ApplicationUsers? user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
                     _ = await userManager.CreateAsync(defaultUser, "123Pa$$word!");
@@ -25,9 +26,9 @@ namespace Domain
             }
         }
 
-        public static async Task SeedSuperAdminAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedSuperAdminAsync(UserManager<ApplicationUsers> userManager, RoleManager<IdentityRole> roleManager)
         {
-            IdentityUser defaultUser = new()
+            ApplicationUsers defaultUser = new()
             {
                 UserName = "SuperAdmin@gmail.com",
                 Email = "SuperAdmin@gmail.com",
@@ -35,7 +36,7 @@ namespace Domain
             };
             if (userManager.Users.All(u => u.Id != defaultUser.Id))
             {
-                IdentityUser? user = await userManager.FindByEmailAsync(defaultUser.Email);
+                ApplicationUsers? user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
                     _ = await userManager.CreateAsync(defaultUser, "123Pa$$word!");
