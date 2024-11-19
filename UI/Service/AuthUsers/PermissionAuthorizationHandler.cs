@@ -7,7 +7,7 @@ namespace UI.Models.IdenityUserAccess
         public PermissionAuthorizationHandler()
         { }
 
-        protected override void HandleRequirement(AuthorizationHandlerContext context, PermissionRequirement requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             if (context.User == null)
             {
@@ -21,11 +21,6 @@ namespace UI.Models.IdenityUserAccess
                 context.Succeed(requirement);
                 return;
             }
-        }
-
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
-        {
-            throw new NotImplementedException();
         }
     }
 }
