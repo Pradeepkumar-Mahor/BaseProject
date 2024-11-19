@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Dapper;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
-using Dapper;
-using System.Data.SqlClient;
 
 namespace DataAccess.Context
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private IDbConnection _connection;
+        private readonly IDbConnection _connection;
         private readonly string connectionString = " ";   //YOUR_SQL_CONNECTION_STRING
 
         public GenericRepository()
@@ -24,7 +20,7 @@ namespace DataAccess.Context
 
         public bool Add(T entity)
         {
-            int rowsEffected = 0;
+            int rowsEffected;
             try
             {
                 string tableName = GetTableName();
@@ -43,7 +39,7 @@ namespace DataAccess.Context
 
         public bool Delete(T entity)
         {
-            int rowsEffected = 0;
+            int rowsEffected;
             try
             {
                 string tableName = GetTableName();
@@ -62,7 +58,7 @@ namespace DataAccess.Context
 
         public IEnumerable<T> GetAll()
         {
-            IEnumerable<T> result = null;
+            IEnumerable<T> result;
             try
             {
                 string tableName = GetTableName();
@@ -79,7 +75,7 @@ namespace DataAccess.Context
 
         public T GetById(int Id)
         {
-            IEnumerable<T> result = null;
+            IEnumerable<T> result;
             try
             {
                 string tableName = GetTableName();
@@ -97,23 +93,23 @@ namespace DataAccess.Context
 
         public bool Update(T entity)
         {
-            int rowsEffected = 0;
+            int rowsEffected;
             try
             {
                 string tableName = GetTableName();
                 string keyColumn = GetKeyColumnName();
                 string keyProperty = GetKeyPropertyName();
-                StringBuilder query = new StringBuilder();
-                query.Append($"UPDATE {tableName} SET ");
-                foreach (var property in GetProperties(true))
+                StringBuilder query = new();
+                _ = query.Append($"UPDATE {tableName} SET ");
+                foreach (PropertyInfo property in GetProperties(true))
                 {
-                    var columnAttr = property.GetCustomAttribute<ColumnAttribute>();
+                    ColumnAttribute? columnAttr = property.GetCustomAttribute<ColumnAttribute>();
                     string propertyName = property.Name;
                     string columnName = columnAttr.Name;
-                    query.Append($"{columnName} = @{propertyName},");
+                    _ = query.Append($"{columnName} = @{propertyName},");
                 }
-                query.Remove(query.Length - 1, 1);
-                query.Append($" WHERE {keyColumn} = @{keyProperty}");
+                _ = query.Remove(query.Length - 1, 1);
+                _ = query.Append($" WHERE {keyColumn} = @{keyProperty}");
                 rowsEffected = _connection.Execute(query.ToString(), entity);
             }
             catch (Exception ex)
@@ -126,12 +122,11 @@ namespace DataAccess.Context
 
         private string GetTableName()
         {
-            string tableName = "";
-            var type = typeof(T);
-            var tableAttr = type.GetCustomAttribute<TableAttribute>();
+            Type type = typeof(T);
+            TableAttribute? tableAttr = type.GetCustomAttribute<TableAttribute>();
             if (tableAttr != null)
             {
-                tableName = tableAttr.Name;
+                string tableName = tableAttr.Name;
                 return tableName;
             }
             return type.Name + "s";
@@ -162,12 +157,12 @@ namespace DataAccess.Context
 
         private string GetColumns(bool excludeKey = false)
         {
-            var type = typeof(T);
-            var columns = string.Join(", ", type.GetProperties()
+            Type type = typeof(T);
+            string columns = string.Join(", ", type.GetProperties()
                 .Where(p => !excludeKey || !p.IsDefined(typeof(KeyAttribute)))
                 .Select(p =>
                 {
-                    var columnAttr = p.GetCustomAttribute<ColumnAttribute>();
+                    ColumnAttribute? columnAttr = p.GetCustomAttribute<ColumnAttribute>();
                     return columnAttr != null ? columnAttr.Name : p.Name;
                 }));
             return columns;
@@ -175,9 +170,9 @@ namespace DataAccess.Context
 
         protected string GetPropertyNames(bool excludeKey = false)
         {
-            var properties = typeof(T).GetProperties()
+            IEnumerable<PropertyInfo> properties = typeof(T).GetProperties()
                 .Where(p => !excludeKey || p.GetCustomAttribute<KeyAttribute>() == null);
-            var values = string.Join(", ", properties.Select(p =>
+            string values = string.Join(", ", properties.Select(p =>
             {
                 return $"@{p.Name}";
             }));
@@ -186,14 +181,14 @@ namespace DataAccess.Context
 
         protected IEnumerable<PropertyInfo> GetProperties(bool excludeKey = false)
         {
-            var properties = typeof(T).GetProperties()
+            IEnumerable<PropertyInfo> properties = typeof(T).GetProperties()
                 .Where(p => !excludeKey || p.GetCustomAttribute<KeyAttribute>() == null);
             return properties;
         }
 
         protected string GetKeyPropertyName()
         {
-            var properties = typeof(T).GetProperties()
+            IEnumerable<PropertyInfo> properties = typeof(T).GetProperties()
                 .Where(p => p.GetCustomAttribute<KeyAttribute>() != null);
             if (properties.Any())
             {

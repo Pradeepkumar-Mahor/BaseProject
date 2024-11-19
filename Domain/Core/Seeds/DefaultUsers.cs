@@ -1,5 +1,4 @@
 ﻿using Domain.Core;
-using Domain.DataClass;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 

@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Dapper;
+﻿using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 
 namespace DataAccess
@@ -24,7 +24,7 @@ namespace DataAccess
                     return await dbConnection.QueryAsync<T>(spName, parameters, commandType: CommandType.StoredProcedure);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -35,10 +35,10 @@ namespace DataAccess
             try
             {
                 using IDbConnection connection = new SqlConnection(_configuration.GetConnectionString(connectionId));
-                await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
+                _ = await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

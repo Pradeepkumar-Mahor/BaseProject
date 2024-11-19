@@ -1,6 +1,5 @@
 ﻿using DataAccess.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection.Repositories;
 using UI.Models.IdenityUserAccess;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -11,14 +10,14 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             #region AuthService
 
-            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-            services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            _ = services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            _ = services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             #endregion AuthService
 
             #region PersonPro
 
-            services.AddTransient<IProductRepository, ProductRepository>();
+            _ = services.AddTransient<IProductRepository, ProductRepository>();
 
             #endregion PersonPro
 

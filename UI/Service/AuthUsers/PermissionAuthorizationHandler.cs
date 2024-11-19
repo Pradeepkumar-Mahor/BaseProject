@@ -7,13 +7,13 @@ namespace UI.Models.IdenityUserAccess
         public PermissionAuthorizationHandler()
         { }
 
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
+        protected override void HandleRequirement(AuthorizationHandlerContext context, PermissionRequirement requirement)
         {
             if (context.User == null)
             {
                 return;
             }
-            var permissionss = context.User.Claims.Where(x => x.Type == "Permission" &&
+            IEnumerable<System.Security.Claims.Claim> permissionss = context.User.Claims.Where(x => x.Type == "Permission" &&
                                                                 x.Value == requirement.Permission &&
                                                                 x.Issuer == "LOCAL AUTHORITY");
             if (permissionss.Any())
@@ -21,6 +21,11 @@ namespace UI.Models.IdenityUserAccess
                 context.Succeed(requirement);
                 return;
             }
+        }
+
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
+        {
+            throw new NotImplementedException();
         }
     }
 }

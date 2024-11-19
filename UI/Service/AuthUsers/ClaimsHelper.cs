@@ -17,10 +17,10 @@ namespace UI.Models.IdenityUserAccess
 
         public static async Task AddPermissionClaim(this RoleManager<IdentityRole> roleManager, IdentityRole role, string permission)
         {
-            var allClaims = await roleManager.GetClaimsAsync(role);
+            IList<Claim> allClaims = await roleManager.GetClaimsAsync(role);
             if (!allClaims.Any(a => a.Type == "Permission" && a.Value == permission))
             {
-                await roleManager.AddClaimAsync(role, new Claim("Permission", permission));
+                _ = await roleManager.AddClaimAsync(role, new Claim("Permission", permission));
             }
         }
     }

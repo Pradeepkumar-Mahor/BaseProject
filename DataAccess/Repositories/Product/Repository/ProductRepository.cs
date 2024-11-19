@@ -1,5 +1,4 @@
-﻿using DataAccess;
-using Domain.DataClass;
+﻿using Domain.DataClass;
 using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Repositories
@@ -19,7 +18,7 @@ namespace DataAccess.Repositories
         {
             try
             {
-                await _dataAccess.SaveData("sp_add_Product", new
+                _ = await _dataAccess.SaveData("sp_add_Product", new
                 {
                     product.ProductName,
                     product.ProductDescription,
@@ -28,7 +27,7 @@ namespace DataAccess.Repositories
                 });
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -38,7 +37,7 @@ namespace DataAccess.Repositories
         {
             try
             {
-                await _dataAccess.SaveData("sp_update_Product", new
+                _ = await _dataAccess.SaveData("sp_update_Product", new
                 {
                     product.Id,
                     product.ProductName,
@@ -48,7 +47,7 @@ namespace DataAccess.Repositories
                 });
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -58,10 +57,10 @@ namespace DataAccess.Repositories
         {
             try
             {
-                await _dataAccess.SaveData("sp_delete_Product", new { Id = id });
+                _ = await _dataAccess.SaveData("sp_delete_Product", new { Id = id });
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

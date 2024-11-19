@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 
 namespace UI.Service.Email
 {
@@ -7,15 +6,15 @@ namespace UI.Service.Email
     {
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            var frmMail = "PradeepMahor47@outlook.com";
-            var pw = "Honor@84240_PMM";
+            string frmMail = "PradeepMahor47@outlook.com";
+            string pw = "Honor@84240_PMM";
 
-            SmtpClient client = new SmtpClient("smtp-mail.outlook.com");
+            SmtpClient client = new("smtp-mail.outlook.com");
             client.Port = 587; // 25 587
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
             client.UseDefaultCredentials = false;
-            System.Net.NetworkCredential credential = new NetworkCredential(frmMail, pw);
+            System.Net.NetworkCredential credential = new(frmMail, pw);
 
             client.UseDefaultCredentials = true;
             client.Credentials = credential;

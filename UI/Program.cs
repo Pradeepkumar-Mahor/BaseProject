@@ -1,19 +1,18 @@
 using DataAccess;
-using DeviceDetectorNET.Cache;
 using DeviceDetectorNET;
+using DeviceDetectorNET.Cache;
 using Domain;
 using Domain.Data;
-using Domain.DataClass;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UI.Service.Email;
 using WebEssentials.AspNetCore.Pwa;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -66,9 +65,9 @@ builder.Services.ConfigureApplicationCookie(option =>
     option.Cookie.HttpOnly = true;
     option.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     //option.LoginPath = "/UsersAccount/SignIn";
-    //option.AccessDeniedPath = "/UsersAccount/AccessDenied";
+    //option.AccessDeniedPath = "/Account/AccessDenied";
     // ReturnUrlParameter requires
-    //using Microsoft.AspNetCore.Authentication.Cookies;
+
     option.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
     option.SlidingExpiration = true;
 });
@@ -110,22 +109,22 @@ using (IServiceScope scope = app.Services.CreateScope())
 
 app.Use(async (context, next) =>
 {
-    var detector = new DeviceDetector(context.Request.Headers["User-Agent"].ToString());
+    DeviceDetector detector = new(context.Request.Headers["User-Agent"].ToString());
     detector.SetCache(new DictionaryCache());
     detector.Parse();
 
     if (detector.IsMobile())
     {
-        context.Items.Remove("isMobile");
+        _ = context.Items.Remove("isMobile");
         context.Items.Add("isMobile", true);
     }
     else
     {
-        context.Items.Remove("isMobile");
+        _ = context.Items.Remove("isMobile");
         context.Items.Add("isMobile", false);
     }
 
-    context.Items.Remove("DeviceName");
+    _ = context.Items.Remove("DeviceName");
     context.Items.Add("DeviceName", detector.GetDeviceName());
 
     await next();
@@ -136,13 +135,13 @@ app.Use(async (context, next) =>
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
+    _ = app.UseMigrationsEndPoint();
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    _ = app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    _ = app.UseHsts();
 }
 
 app.UseHttpsRedirection();
