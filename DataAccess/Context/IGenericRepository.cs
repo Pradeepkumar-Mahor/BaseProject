@@ -1,15 +1,27 @@
-﻿namespace DataAccess.Context
+﻿using System.Linq.Expressions;
+
+namespace DataAccess.Context
 {
-    internal interface IGenericRepository<T>
+    public interface IGenericRepository<TEntity> where TEntity : class
     {
-        T GetById(int id);
+        IQueryable<TEntity> GetAll(FindOptions? findOptions = null);
 
-        IEnumerable<T> GetAll();
+        TEntity FindOne(Expression<Func<TEntity, bool>> predicate, FindOptions? findOptions = null);
 
-        bool Add(T entity);
+        IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, FindOptions? findOptions = null);
 
-        bool Update(T entity);
+        void Add(TEntity entity);
 
-        bool Delete(T entity);
+        void AddMany(IEnumerable<TEntity> entities);
+
+        void Update(TEntity entity);
+
+        void Delete(TEntity entity);
+
+        void DeleteMany(Expression<Func<TEntity, bool>> predicate);
+
+        bool Any(Expression<Func<TEntity, bool>> predicate);
+
+        int Count(Expression<Func<TEntity, bool>> predicate);
     }
 }

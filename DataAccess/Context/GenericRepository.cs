@@ -1,200 +1,98 @@
 ﻿using Dapper;
+using Domain.Data;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
 namespace DataAccess.Context
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        private readonly IDbConnection _connection;
-        private readonly string connectionString = " ";   //YOUR_SQL_CONNECTION_STRING
+        private readonly ApplicationDbContext _dbContext;
 
-        public GenericRepository()
+        public GenericRepository(ApplicationDbContext dbContext)
         {
-            _connection = new SqlConnection(connectionString);
+            _dbContext = dbContext;
         }
 
-        public bool Add(T entity)
+        public void Add(TEntity entity)
         {
-            int rowsEffected;
-            try
-            {
-                string tableName = GetTableName();
-                string columns = GetColumns(excludeKey: true);
-                string properties = GetPropertyNames(excludeKey: true);
-                string query = $"INSERT INTO {tableName} ({columns}) VALUES ({properties})";
-                rowsEffected = _connection.Execute(query, entity);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-            return rowsEffected > 0 ? true : false;
+            _dbContext.Set<TEntity>().Add(entity);
+            _dbContext.SaveChanges();
         }
 
-        public bool Delete(T entity)
+        public void AddMany(IEnumerable<TEntity> entities)
         {
-            int rowsEffected;
-            try
-            {
-                string tableName = GetTableName();
-                string keyColumn = GetKeyColumnName();
-                string keyProperty = GetKeyPropertyName();
-                string query = $"DELETE FROM {tableName} WHERE {keyColumn} = @{keyProperty}";
-                rowsEffected = _connection.Execute(query, entity);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-            return rowsEffected > 0 ? true : false;
+            _dbContext.Set<TEntity>().AddRange(entities);
+            _dbContext.SaveChanges();
         }
 
-        public IEnumerable<T> GetAll()
+        public void Delete(TEntity entity)
         {
-            IEnumerable<T> result;
-            try
-            {
-                string tableName = GetTableName();
-                string query = $"SELECT * FROM {tableName}";
-                result = _connection.Query<T>(query);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-            return result;
+            _dbContext.Set<TEntity>().Remove(entity);
+            _dbContext.SaveChanges();
         }
 
-        public T GetById(int Id)
+        public void DeleteMany(Expression<Func<TEntity, bool>> predicate)
         {
-            IEnumerable<T> result;
-            try
-            {
-                string tableName = GetTableName();
-                string keyColumn = GetKeyColumnName();
-                string query = $"SELECT * FROM {tableName} WHERE {keyColumn} = '{Id}'";
-                result = _connection.Query<T>(query);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-            return result.FirstOrDefault();
+            var entities = Find(predicate);
+            _dbContext.Set<TEntity>().RemoveRange(entities);
+            _dbContext.SaveChanges();
         }
 
-        public bool Update(T entity)
+        public TEntity FindOne(Expression<Func<TEntity, bool>> predicate, FindOptions? findOptions = null)
         {
-            int rowsEffected;
-            try
+            return Get(findOptions).FirstOrDefault(predicate)!;
+        }
+
+        public IQueryable<TEntity> Find(Expression<Func<TEntity, bool>> predicate, FindOptions? findOptions = null)
+        {
+            return Get(findOptions).Where(predicate);
+        }
+
+        public IQueryable<TEntity> GetAll(FindOptions? findOptions = null)
+        {
+            return Get(findOptions);
+        }
+
+        public void Update(TEntity entity)
+        {
+            _dbContext.Set<TEntity>().Update(entity);
+            _dbContext.SaveChanges();
+        }
+
+        public bool Any(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbContext.Set<TEntity>().Any(predicate);
+        }
+
+        public int Count(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbContext.Set<TEntity>().Count(predicate);
+        }
+
+        private DbSet<TEntity> Get(FindOptions? findOptions = null)
+        {
+            findOptions ??= new FindOptions();
+            var entity = _dbContext.Set<TEntity>();
+            if (findOptions.IsAsNoTracking && findOptions.IsIgnoreAutoIncludes)
             {
-                string tableName = GetTableName();
-                string keyColumn = GetKeyColumnName();
-                string keyProperty = GetKeyPropertyName();
-                StringBuilder query = new();
-                _ = query.Append($"UPDATE {tableName} SET ");
-                foreach (PropertyInfo property in GetProperties(true))
-                {
-                    ColumnAttribute? columnAttr = property.GetCustomAttribute<ColumnAttribute>();
-                    string propertyName = property.Name;
-                    string columnName = columnAttr.Name;
-                    _ = query.Append($"{columnName} = @{propertyName},");
-                }
-                _ = query.Remove(query.Length - 1, 1);
-                _ = query.Append($" WHERE {keyColumn} = @{keyProperty}");
-                rowsEffected = _connection.Execute(query.ToString(), entity);
+                entity.IgnoreAutoIncludes().AsNoTracking();
             }
-            catch (Exception ex)
+            else if (findOptions.IsIgnoreAutoIncludes)
             {
-                Console.WriteLine(ex.Message);
-                throw;
+                entity.IgnoreAutoIncludes();
             }
-            return rowsEffected > 0 ? true : false;
-        }
-
-        private string GetTableName()
-        {
-            Type type = typeof(T);
-            TableAttribute? tableAttr = type.GetCustomAttribute<TableAttribute>();
-            if (tableAttr != null)
+            else if (findOptions.IsAsNoTracking)
             {
-                string tableName = tableAttr.Name;
-                return tableName;
+                entity.AsNoTracking();
             }
-            return type.Name + "s";
-        }
-
-        public static string GetKeyColumnName()
-        {
-            PropertyInfo[] properties = typeof(T).GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                object[] keyAttributes = property.GetCustomAttributes(typeof(KeyAttribute), true);
-                if (keyAttributes != null && keyAttributes.Length > 0)
-                {
-                    object[] columnAttributes = property.GetCustomAttributes(typeof(ColumnAttribute), true);
-                    if (columnAttributes != null && columnAttributes.Length > 0)
-                    {
-                        ColumnAttribute columnAttribute = (ColumnAttribute)columnAttributes[0];
-                        return columnAttribute.Name;
-                    }
-                    else
-                    {
-                        return property.Name;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private string GetColumns(bool excludeKey = false)
-        {
-            Type type = typeof(T);
-            string columns = string.Join(", ", type.GetProperties()
-                .Where(p => !excludeKey || !p.IsDefined(typeof(KeyAttribute)))
-                .Select(p =>
-                {
-                    ColumnAttribute? columnAttr = p.GetCustomAttribute<ColumnAttribute>();
-                    return columnAttr != null ? columnAttr.Name : p.Name;
-                }));
-            return columns;
-        }
-
-        protected string GetPropertyNames(bool excludeKey = false)
-        {
-            IEnumerable<PropertyInfo> properties = typeof(T).GetProperties()
-                .Where(p => !excludeKey || p.GetCustomAttribute<KeyAttribute>() == null);
-            string values = string.Join(", ", properties.Select(p =>
-            {
-                return $"@{p.Name}";
-            }));
-            return values;
-        }
-
-        protected IEnumerable<PropertyInfo> GetProperties(bool excludeKey = false)
-        {
-            IEnumerable<PropertyInfo> properties = typeof(T).GetProperties()
-                .Where(p => !excludeKey || p.GetCustomAttribute<KeyAttribute>() == null);
-            return properties;
-        }
-
-        protected string GetKeyPropertyName()
-        {
-            IEnumerable<PropertyInfo> properties = typeof(T).GetProperties()
-                .Where(p => p.GetCustomAttribute<KeyAttribute>() != null);
-            if (properties.Any())
-            {
-                return properties.FirstOrDefault().Name;
-            }
-            return null;
+            return entity;
         }
     }
 }

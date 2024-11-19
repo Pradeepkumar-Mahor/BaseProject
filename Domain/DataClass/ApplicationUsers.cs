@@ -4,7 +4,6 @@ namespace Domain.DataClass
 {
     public class ApplicationUsers : IdentityUser
     {
-
         public string FirstName { get; set; } = string.Empty;
         public string MidName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

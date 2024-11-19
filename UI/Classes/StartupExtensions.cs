@@ -1,4 +1,7 @@
-﻿using DataAccess.Repositories;
+﻿using DataAccess.Context;
+using DataAccess.Core.Interface;
+using DataAccess.Core.Repository;
+using DataAccess.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using UI.Models.IdenityUserAccess;
 
@@ -15,11 +18,27 @@ namespace Microsoft.Extensions.DependencyInjection
 
             #endregion AuthService
 
+            #region DbContext
+
+            _ = services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            #region CoreTables
+
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            #endregion CoreTables
+
+            #endregion DbContext
+
+            #region SqlUsingDapper
+
             #region PersonPro
 
             _ = services.AddTransient<IProductRepository, ProductRepository>();
 
             #endregion PersonPro
+
+            #endregion SqlUsingDapper
 
             return services;
         }
