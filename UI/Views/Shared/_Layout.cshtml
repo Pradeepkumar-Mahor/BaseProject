@@ -9,52 +9,59 @@
     <link rel="stylesheet" href="~/css/bootstrapmateria.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/UI.styles.css" asp-append-version="true" />
+
+     <link rel="stylesheet" href="~/lib/datatables/css/datatables.material.css" asp-append-version="true" />
+     <link rel="stylesheet" href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.css" asp-append-version="true" />
+     <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.css"asp-append-version="true" />
+     <link rel="stylesheet" href="~/lib/toastr.js/toastr.css" asp-append-version="true" />
+
 </head>
 <body>
 
-    <header>
-<nav class="navbar navbar-expand-lg border-bottom box-shadow mb-3 bg-1" data-bs-theme="dark" >
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">UI</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarColor01">
-      <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link " asp-area="" asp-controller="Category" asp-action="Index">Category</a>
-            </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
-          </div>
-        </li>
-      </ul>
-      <partial name="_LoginPartial" />
-    </div>
-  </div>
-</nav>
-    </header>
+<header>
+   <nav class="navbar navbar-expand-lg border-bottom box-shadow mb-3 bg-1" data-bs-theme="dark" >
+      <div class="container-fluid">
+         <a class="navbar-brand" href="#">UI</a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+               <li class="nav-item">
+                  <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link " asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">Features</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">Pricing</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">About</a>
+               </li>
+               <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                     aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                  <div class="dropdown-menu">
+                     <a class="dropdown-item" href="#">Action</a>
+                     <a class="dropdown-item" href="#">Another action</a>
+                     <a class="dropdown-item" href="#">Something else here</a>
+                     <div class="dropdown-divider"></div>
+                     <a class="dropdown-item" href="#">Separated link</a>
+                  </div>
+               </li>
+            </ul>
+            <partial name="_LoginPartial" />
+         </div>
+      </div>
+   </nav>
+</header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -68,7 +75,15 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery.serializejson/jquery.serializejson.js"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.js"></script>
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+
+
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
