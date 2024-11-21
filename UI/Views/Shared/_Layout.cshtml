@@ -50,7 +50,7 @@
                                aria-haspopup="true" aria-expanded="false">Administrator</a>
                   <div class="dropdown-menu">
                     <a class="dropdown-item" asp-area="AppAdmin" asp-controller="Roles" asp-action="Index">Roles</a>
-                                <a href="@Url.Action("Index","Roles",new {Area="AppAdmin"})">Go to Admin Area</a>
+                                @* <a href="@Url.Action("Index","Roles",new {Area="AppAdmin"})">Go to Admin Area</a> *@
 
                     <a class="dropdown-item" asp-area="AppAdmin" asp-controller="Users" asp-action="Index">Users</a>
                     <a class="dropdown-item" asp-area="AppAdmin" asp-controller="UserRoles" asp-action="Index">UserRoles</a>
