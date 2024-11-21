@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UI.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private ICategoryRepository _categoryRepository;
 

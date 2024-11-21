@@ -1,3 +1,4 @@
+using AspNetCoreHero.ToastNotification;
 using DataAccess;
 using DeviceDetectorNET;
 using DeviceDetectorNET.Cache;
@@ -79,6 +80,18 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
 
 #endregion Custom
+
+#region Notification Service
+
+builder.Services.AddNotyf(config =>
+{
+    config.DurationInSeconds = 5;
+    config.IsDismissable = true;
+    config.Position = NotyfPosition.TopRight;
+}
+);
+
+#endregion Notification Service
 
 WebApplication app = builder.Build();
 

@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UI.Controllers;
 using Utility;
 
 namespace UI.Areas.AppAdmin.Controllers
 {
     [Area("AppAdmin")]
     [Authorize(Roles = SD.SuperAdmin)]
-    public class RolesController : Controller
+    public class RolesController : BaseController
     {
         private readonly RoleManager<IdentityRole> _roleManager;
 
