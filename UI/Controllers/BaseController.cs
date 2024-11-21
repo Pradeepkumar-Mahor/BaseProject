@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace UI.Controllers
 {
@@ -7,7 +8,13 @@ namespace UI.Controllers
     {
         private readonly INotyfService _notyf;
 
-        public IActionResult Index()
+        public static string ToTitleCase(string str)
+        {
+            TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
+            return myTI.ToTitleCase(str);
+        }
+
+        public IActionResult NotyfSample()
         {
             _notyf.Success("Success Notification");
             _notyf.Success("Success Notification that closes in 10 Seconds.", 3);
