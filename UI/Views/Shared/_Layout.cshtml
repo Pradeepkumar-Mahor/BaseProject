@@ -47,10 +47,14 @@
                </li>
                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                     aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                               aria-haspopup="true" aria-expanded="false">Administrator</a>
                   <div class="dropdown-menu">
-                     <a class="dropdown-item" href="#">Action</a>
-                     <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" asp-area="AppAdmin" asp-controller="Roles" asp-action="Index">Roles</a>
+                                <a href="@Url.Action("Index","Roles",new {Area="AppAdmin"})">Go to Admin Area</a>
+
+                    <a class="dropdown-item" asp-area="AppAdmin" asp-controller="Users" asp-action="Index">Users</a>
+                    <a class="dropdown-item" asp-area="AppAdmin" asp-controller="UserRoles" asp-action="Index">UserRoles</a>
+
                      <a class="dropdown-item" href="#">Something else here</a>
                      <div class="dropdown-divider"></div>
                      <a class="dropdown-item" href="#">Separated link</a>

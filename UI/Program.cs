@@ -5,6 +5,7 @@ using Domain;
 using Domain.Data;
 using Domain.DataClass;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UI.Service.Email;
@@ -153,24 +154,28 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.MapRazorPages();
 
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapRazorPages();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapAreaControllerRoute(
+        name: "AppAdmin",
+        areaName: "AppAdmin",
+        pattern: "AppAdmin/{controller=Home}/{action=Index}"
+    );
 
-//    endpoints.MapControllerRoute(
-//        name: "default",
-//        pattern: "{controller=Home}/{action=Index}/{id?}");
-
-//    endpoints.MapAreaControllerRoute(
-//            name: "Identity",
-//            areaName: "Identity",
-//            pattern: "{page=login}/{id?}"
-//          );
-//});
+    endpoints.MapAreaControllerRoute(
+        name: "areaRoute",
+        areaName: "default",
+        pattern: "{area:exists}/{controller}/{action}"
+    );
+    endpoints.MapControllerRoute(
+       name: "default",
+       pattern: "{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapRazorPages();
+});
 
 app.Run();

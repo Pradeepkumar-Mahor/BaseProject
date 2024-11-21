@@ -1,0 +1,115 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<IdentityRole>
+@{
+    ViewData["Title"] = "Roles Management";
+    int srNo = 1;
+}
+
+
+<section class="section">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card border-info mb-3 " style="border-radius:10px;">
+                <h4 class="card-header fw-bold bg-info text-white" style="border-radius:5px;">
+                    Role list
+                </h4>
+                <div class="card-body">
+                    <div class="card-title">
+                        <div class="itemContainer">
+                            <div class="item">
+                                <a class=" " asp-action="Create">
+                                    <i class="bx-fw bx bx-plus bx-xs bx-spin-hover"
+                                       style="font-weight:bold"></i>Create Role
+                                </a>
+                            </div>
+                            <div class="item">
+                                <a class=" " asp-action="Excel">
+                                    <i class="ri-file-excel-line"></i>Excel
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-hover table-bordered ">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(Model => Model.Id)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(Model => Model.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(Model => Model.NormalizedName)
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        @if (Model is not null)
+                        {
+                            <tbody>
+
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@srNo</td>
+
+                                        <td>@Html.DisplayFor(Modelitem => item.Name)</td>
+                                        <td>@Html.DisplayFor(Modelitem => item.NormalizedName)</td>
+                                        <td class="text-right">
+                                            <div class="btn-group">
+                                                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
+                                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="d-none d-md-block dropdown-toggle ps-2">Action</span>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="">
+
+                                                    <li>
+                                                        <a class="dropdown-item">
+                                                            <i class="fas fa-pencil-alt"></i> Edit
+                                                        </a>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                    <form class="d-inline">
+                                                        <a class="dropdown-item"><i class="fas fa-trash-alt"></i> Delete</a>
+                                                    </form>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                    <li>
+                                                            @if (item.Name != "SuperAdmin")
+                                                            {
+                                                            <a style='margin-right:16px' asp-controller="Permission" asp-action="Index" asp-route-roleId="@item.Id" class="dropdown-item">
+                                                                <i class="fas fa-wrench"></i> Manage Permissions
+                                                            </a>
+                                                            }
+                                                    </li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                </ul><!-- End Profile Dropdown Items -->
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    srNo++;
+                                }
+                            </tbody>
+                        }
+                    </table>
+                    @if (Model is null)
+                    {
+
+                        <p class="alert alert-dismissible alert-info">
+                            No Data
+                        </p>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
