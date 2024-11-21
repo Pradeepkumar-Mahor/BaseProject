@@ -7,7 +7,7 @@ using UI.Models;
 namespace UI.Controllers
 {
     [AllowAnonymous]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly INotyfService _notyf;
