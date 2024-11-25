@@ -8,23 +8,22 @@
 
 <section class="section">
 
-    <div class="row">
+    <div class="row d-flex justify-content-center">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title form-title">
                         Role list
                     </h5>
-                    <div class="itemContainer">
+                    <div class="itemContainer pb-2 mb-2">
                         <div class="item">
                             <a class="btn btn-sm btn-info" asp-action="Create">
-                                <i class="bx-fw bx bx-plus bx-xs bx-spin-hover"
-                                   style="font-weight:bold"></i>Create Role
+                                <i class="bi bi-plus"></i> Create Role
                             </a>
                         </div>
                         <div class="item">
                             <a class="btn btn-sm btn-outline-success" asp-action="Excel">
-                                <i class="ri-file-excel-line"></i>Excel
+                                <i class="bi bi-file-earmark-excel-fill"></i> Excel
                             </a>
                         </div>
                     </div>
@@ -49,12 +48,12 @@
                         @if (Model is not null)
                         {
                             <tbody>
-
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>@srNo</td>
-
+                                    <tr class="text-center">
+                                        <td >
+                                            @srNo
+                                        </td>
                                         <td>@Html.DisplayFor(Modelitem => item.Name)</td>
                                         <td>@Html.DisplayFor(Modelitem => item.NormalizedName)</td>
                                         <td class="text-right">
@@ -86,9 +85,9 @@
                                                             </a>
                                                             }
                                                     </li>
-                                                    <li>
+                                                   @*  <li>
                                                         <hr class="dropdown-divider">
-                                                    </li>
+                                                    </li> *@
                                                 </ul><!-- End Profile Dropdown Items -->
                                             </div>
                                         </td>

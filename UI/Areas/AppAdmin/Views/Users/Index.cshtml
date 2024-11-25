@@ -15,7 +15,7 @@
                     <h5 class="card-title form-title">
                         User list
                     </h5>
-                    <div class="itemContainer">
+                    <div class="itemContainer pb-2 mb-2">
                         <div class="item">
                             <a class="btn btn-sm btn-info" asp-action="Create">
                                 <i class="bx-fw bx bx-plus bx-xs bx-spin-hover"
@@ -51,8 +51,10 @@
 
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>@srNo</td>
+                                    <tr class="text-center">
+                                        <td >
+                                            @srNo
+                                            </td>
                                         <td>
                                             <div class="row">
                                                 <div class="col-sm">
@@ -96,9 +98,9 @@
                                                         </a>
 
                                                     </li>
-                                                    <li>
+                                                   @*  <li>
                                                         <hr class="dropdown-divider">
-                                                    </li>
+                                                    </li> *@
                                                 </ul><!-- End Profile Dropdown Items -->
                                             </div>
                                         </td>
