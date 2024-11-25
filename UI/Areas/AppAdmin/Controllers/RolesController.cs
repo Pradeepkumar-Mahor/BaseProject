@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +13,12 @@ namespace UI.Areas.AppAdmin.Controllers
     public class RolesController : BaseController
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly INotyfService _notyf;
 
-        public RolesController(RoleManager<IdentityRole> roleManager)
+        public RolesController(RoleManager<IdentityRole> roleManager, INotyfService notyf)
         {
             _roleManager = roleManager;
+            _notyf = notyf;
         }
 
         public async Task<IActionResult> Index()
@@ -43,9 +46,10 @@ namespace UI.Areas.AppAdmin.Controllers
         [HttpPost]
         public IActionResult Create(IdentityRole role)
         {
-            if (role is null)
+            if (role.Name is null)
             {
-                return NotFound();
+                _notyf.Error("Error : Role Name not found", 4);
+                return View(role);
             }
             if (!_roleManager.RoleExistsAsync(roleName: role.Name).GetAwaiter().GetResult())
             {

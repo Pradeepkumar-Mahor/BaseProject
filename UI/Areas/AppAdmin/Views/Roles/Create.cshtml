@@ -13,23 +13,28 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title table-title">
+                    <h5 class="card-title form-title">
                         New Role
                         <a style="" class="back" asp-action="Index">
                             <i class="bi bi-arrow-left-circle-fill"></i> Back
                         </a>
                     </h5>
 
-                    <form class="row g-3 p-2 needs-validation" method="post" novalidate>
-                        <div class="col-md-12">
-                            <label asp-for="Name" class="form-label"></label>
-                            <input asp-for="Name" class="form-control" required />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
+                    <form class="row g-3 p-2 " method="post"  >
+                        <div class="row">
+                            <div class="col-12">
 
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                         </div>
+                                     <div class="form-floating mb-3">
+                                        <input asp-for="Name" class="form-control" autocomplete="Name" required aria-required="true" placeholder="Please enter Role Name" />
+                                        <label asp-for="Name" class="form-label"></label>
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
