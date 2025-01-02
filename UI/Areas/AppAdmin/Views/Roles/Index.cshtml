@@ -72,18 +72,13 @@
                                                         <hr class="dropdown-divider">
                                                     </li>
                                                     <li>
-                                                        <form asp-area="AppAdmin" asp-controller="Roles" asp-action="DeleteRole"
-                                                                asp-route-id="@item.Id" method="post">
-                                                            <button type="button" class="dropdown-item btn btn-danger"
-                                                                    onclick="return functionConfirm(this,'@item.Name')">
-                                                                <i class="fas fa-trash-alt"></i> Delete</button>
-                                                        </form>
-                                                    <a class="dropdown-item" style='cursor:pointer; width:100px;'
-                                                           onclick='Delete("/AppAdmin/Roles/DeleteRole/@item.Id","@item.Name")'
-                                                           >
-                                                            <i class="fas fa-trash-alt"></i>
-                                                            Delete</a>
-                                                    </li>
+                                                         @Html.AntiForgeryToken()
+                                                            <button type="button"
+                                                                onclick="return functionConfirm(this,'@item.Name','@item.Id')"
+                                                                    class="dropdown-item">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                                Delete
+                                                            </button>
                                                     <li>
                                                         <hr class="dropdown-divider">
                                                     </li>
@@ -122,25 +117,36 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script type="text/javascript">
-        function functionConfirm(event,ItemName) {
-            swal({
-                title: 'Are you sure you want to delete..? : ' + ItemName,
-                text: "You will not be able to recover this item",
-                type: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'No',
-                cancelButtonClass: 'btn btn-danger',
-                showConfirmButton: true,
-                confirmButtonText: 'Yes',
-                confirmButtonClass: 'btn btn-success'
-            }, function (isConfirm) {
-                if (isConfirm) {
-                    $('form').submit();
-                    return true;
-                } else {
-                    return false;
-                }
-            });
+        function functionConfirm(event,ItemName,idVal) {
+                    Swal.fire({
+                       title: 'Are you sure you want to delete..? : ' + ItemName,
+
+                      showDenyButton: true,
+                      showCancelButton: false,
+                      confirmButtonText: "Yes",
+                      denyButtonText: "No"
+                    }).then((result) => {
+                       if (result.isConfirmed) {
+
+                        $.ajax(
+                        {
+                            url: "@Url.Action("DeleteRole", "Roles")",
+                            method: "POST",
+                            contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                            dataType: "json",
+                            data: {
+                                id: idVal,
+                                __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+                            }
+                        });
+
+                        Swal.fire("success", "", "success");
+
+                      } else if (result.isDenied) {
+                        Swal.fire("Changes are not saved", "", "info");
+                      }
+                    });
+
             return false;
         }
     </script>

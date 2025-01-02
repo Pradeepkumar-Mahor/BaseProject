@@ -45,6 +45,7 @@ namespace UI.Areas.AppAdmin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(IdentityRole role)
         {
             if (role.Name is null)
@@ -61,7 +62,8 @@ namespace UI.Areas.AppAdmin.Controllers
         }
 
         [HttpPost]
-        public IActionResult DeleteRole([Required] string id)
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteRole(string id)
         {
             if (id is null)
             {

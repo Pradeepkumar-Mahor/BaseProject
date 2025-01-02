@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Domain.DataClass;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +18,13 @@ namespace UI.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUsers> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly INotyfService _notyf;
 
-        public LoginModel(SignInManager<ApplicationUsers> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<ApplicationUsers> signInManager, ILogger<LoginModel> logger, INotyfService notyf)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _notyf = notyf;
         }
 
         /// <summary>
@@ -110,6 +113,7 @@ namespace UI.Areas.Identity.Pages.Account
                 Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    _notyf.Success("User logged in");
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
@@ -119,6 +123,7 @@ namespace UI.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
+                    _notyf.Error("User account locked out");
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
